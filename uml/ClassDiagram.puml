@@ -1,0 +1,45 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+class ListMaker {
+    +main()
+    +start()
+}
+
+class ListController {
+    +newListButtonClicked()
+    +modifyListButtonClicked()
+    +renameListButtonClicked()
+    +deleteListButtonClicked()
+    +fileButtonClicked()
+    +helpButtonClicked()
+    +openButtonClicked()
+    +saveButtonClicked()
+    +saveAsButtonClicked()
+    +fileButtonClicked()
+    +helpButtonClicked()
+    +openButtonClicked()
+    +saveButtonClicked()
+    +saveAsButtonClicked()
+    +listColumnClicked()
+    +datesColumnClicked()
+}
+
+class ItemController {
+    +addButtonClicked()
+    +renameButtonClicked()
+    +editDateButtonClicked()
+    +editDescriptionButtonClicked()
+    +deleteButtonClicked()
+    +taskColumnClicked()
+    +dateColumnClicked()
+    +completeColumnClicked()
+    +descriptionColumnClicked()
+}
+
+javafx.Application <|-- ListMaker
+
+ListMaker - ListController
+ListController - ItemController
+
+@enduml
