@@ -96,20 +96,17 @@ public class ItemController extends ListMaker {
         //else
         //  update txt file with task name. Add date and description if applicable
         //  add task name to list. If date a/o description available, add as well.
-        addBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                data.add(new Table(
-                        taskField.getText(),
-                        datePicker.getChronology(),
-                        descField.getText()
-                ));
-                taskField.clear();
-                if (datePicker != null) {
-                    datePicker = null;
-                }
-                descField.clear();
+        addBtn.setOnAction(event -> {
+            data.add(new Table(
+                    taskField.getText(),
+                    datePicker.getChronology(),
+                    descField.getText()
+            ));
+            taskField.clear();
+            if (datePicker != null) {
+                datePicker = null;
             }
+            descField.clear();
         });
     }
 
