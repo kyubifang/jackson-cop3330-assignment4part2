@@ -5,114 +5,92 @@
 
 package ucf.assignments;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
-import javafx.stage.Window;
 
 import java.awt.*;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.time.chrono.Chronology;
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ItemController extends ListMaker {
 
-    @FXML
-    MenuItem openBtn;
-    @FXML
-    MenuItem saveBtn;
-    @FXML
-    MenuItem saveAsBtn;
-    @FXML
-    MenuItem closeBtn;
-    @FXML
-    MenuItem how2Btn;
-    @FXML
-    MenuItem aboutBtn;
-    @FXML
-    TextField taskField;
-    @FXML
-    TextField descField;
-    @FXML
-    DatePicker datePicker;
-    @FXML
-    Button addBtn;
-    @FXML
-    Button renameBtn;
-    @FXML
-    Button editDateBtn;
-    @FXML
-    Button editDescBtn;
-    @FXML
-    Button deleteBtn;
-    @FXML
-    Button deleteAllBtn;
-    @FXML
-    TableView tableView;
-    @FXML
-    TableColumn<Table, String> taskCol;
-    @FXML
-    TableColumn<Table, String> dateCol;
-    @FXML
-    TableColumn<Table, String> compCol;
-    @FXML
-    TableColumn<Table, String> descCol;
-    @FXML
-    SplitMenuButton filter;
-    @FXML
-    MenuItem showAllBtn;
-    @FXML
-    MenuItem incompBtn;
-    @FXML
-    MenuItem compBtn;
-    @FXML
-    Label noRow;
-    @FXML
-    Label noTask;
+    public MenuItem openBtn;
+    public MenuItem saveBtn;
+    public MenuItem saveAsBtn;
+    public MenuItem closeBtn;
+    public MenuItem how2Btn;
+    public MenuItem aboutBtn;
+    public TextField taskField;
+    public TextField descField;
+    public DatePicker datePicker;
+    public Button addBtn;
+    public Button renameBtn;
+    public Button editDateBtn;
+    public Button editDescBtn;
+    public Button deleteBtn;
+    public Button deleteAllBtn;
+    public TableView<Table> tableView;
+    public TableColumn<Table, String> taskCol;
+    public TableColumn<Table, String> dateCol;
+    public TableColumn<Table, String> compCol;
+    public TableColumn<Table, String> descCol;
+    public SplitMenuButton filter;
+    public MenuItem showAllBtn;
+    public MenuItem incompBtn;
+    public MenuItem compBtn;
+    public Label noRow;
+    public Label noTask;
 
-    private final ObservableList<Table> data = FXCollections.observableArrayList();
-    private final Desktop desktop = Desktop.getDesktop();
+    public final TableView<Table> table = new TableView<>();
+    public final ObservableList<Table> data = FXCollections.observableArrayList();
+    public final Desktop desktop = Desktop.getDesktop();
     final FileChooser fileChooser = new FileChooser();
 
-
+    @FXML
+    void run() {
+    }
 
     @FXML
-    public void addButtonClicked(ActionEvent actionEvent) {
+    public void addButtonClicked() {
         //mouse clicks add button
         //check if there is a task put into the task name field
         //if there isn't
         //  prompt user for a task name
         noTask.setVisible(taskField == null);
         //else
-        //  update txt file with task name. Add date and description if applicable
         //  add task name to list. If date a/o description available, add as well.
+
         addBtn.setOnAction(event -> {
             data.add(new Table(
                     taskField.getText(),
-                    datePicker.getChronology(),
+                    datePicker.getEditor().getText(),
                     descField.getText()
             ));
             taskField.clear();
-            if (datePicker != null) {
-                datePicker = null;
-            }
+            datePicker.getEditor().clear();
             descField.clear();
+            tableView.getItems().addAll(data);
+            tableView.setItems(data);
         });
+        tableView.getItems().addAll(data);
+        tableView.setItems(data);
     }
 
     @FXML
@@ -120,7 +98,6 @@ public class ItemController extends ListMaker {
         //enter button pressed
         //check if there is a task put into the task name field
         //if there is
-        //  update txt file with task name. Add date and description if applicable
         //  add task name to list. If date a/o description available, add as well.
         //else
         //  prompt user for a task name
@@ -132,7 +109,6 @@ public class ItemController extends ListMaker {
         //highlight current selected item's task name
         //allow user to input a new name
         //once clicked off of or enter is pressed
-        //update txt file with new task name
         //update task list with new task name
     }
 
@@ -142,7 +118,6 @@ public class ItemController extends ListMaker {
         //highlight current selected item's date
         //allow user to input a new due date
         //once clicked off of or enter is pressed
-        //update txt file with new task due date
         //update task list with new task due date
     }
 
@@ -152,7 +127,6 @@ public class ItemController extends ListMaker {
         //highlight current selected item's description
         //allow user to input a new description
         //once clicked off of or enter is pressed
-        //update txt file with new task description
         //update task list with new task description
     }
 
@@ -161,7 +135,6 @@ public class ItemController extends ListMaker {
         //mouse clicks delete button
         //gui will open for current highlighted task, prompting if the user is sure
         //if yes
-        //  delete task, date, and description (if applicable) from txt file
         //  delete task, date, description, and completion (if applicable) from table
         //else no
         //  close current gui
@@ -180,6 +153,7 @@ public class ItemController extends ListMaker {
                 }
         );
         //upon selecting list directory, display current tasks, due dates, descriptions, and if completed
+
     }
 
     @FXML
@@ -194,6 +168,8 @@ public class ItemController extends ListMaker {
                     File sFile = fileChooser.showOpenDialog(null);
                     if (sFile != null) {
                         saveFile(sFile);
+                    }else{
+                        saveAsFile(data, sFile);
                     }
                 }
         );
@@ -208,7 +184,7 @@ public class ItemController extends ListMaker {
                 event -> {
                     File sAFile = fileChooser.showOpenDialog(null);
                     if (sAFile != null) {
-                        saveFile(sAFile);
+                        saveAsFile(data, sAFile);
                     }
                 }
         );
@@ -303,7 +279,7 @@ public class ItemController extends ListMaker {
 
     private void saveFile(File sFile) {
         try{
-            desktop.open(sFile);
+            desktop.print(sFile);
         } catch (IOException ex) {
             Logger.getLogger(
                     ItemController.class.getName()).log(
@@ -312,16 +288,28 @@ public class ItemController extends ListMaker {
         }
     }
 
+    private void saveAsFile(ObservableList<Table> data, File sAFile) {
+        try{
+            BufferedWriter newSave = new BufferedWriter(new FileWriter(sAFile));
+
+            for(int i = 0; i < data.size(); i++) {
+                newSave.write(tableView.toString());
+                newSave.newLine();
+            }
+        }catch(IOException e) {
+            System.out.println("Unable to save.");
+        }
+    }
 
 
-    public static class Table{
+    public static class Table {
         private final SimpleStringProperty task;
-        private final Chronology date;
+        private final SimpleDateFormat date;
         private final SimpleStringProperty description;
 
-        public Table(String task, Chronology date, String description) {
+        public Table(String task, String date, String description) {
             this.task = new SimpleStringProperty(task);
-            this.date = date;
+            this.date = new SimpleDateFormat(date);
             this.description = new SimpleStringProperty(description);
         }
 
@@ -333,12 +321,20 @@ public class ItemController extends ListMaker {
             task.set(tasks);
         }
 
-        public String getDate() {
-            return date.getCalendarType();
+        public SimpleStringProperty taskProperty() {
+            return task;
         }
 
-        public void setDate() {
-            date.dateNow();
+        public Calendar getDate() {
+            return date.getCalendar();
+        }
+
+        public void setDate(Calendar dates) {
+            date.setCalendar(dates);
+        }
+
+        public SimpleDateFormat dateProperty() {
+            return date;
         }
 
         public String getDescription() {
@@ -347,6 +343,10 @@ public class ItemController extends ListMaker {
 
         public void setDescription(String descriptions) {
             description.set(descriptions);
+        }
+
+        public SimpleStringProperty descriptionProperty() {
+            return description;
         }
     }
 }

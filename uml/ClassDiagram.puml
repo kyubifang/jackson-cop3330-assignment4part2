@@ -6,40 +6,59 @@ class ListMaker {
     +start()
 }
 
-class ListController {
-    +newListButtonClicked()
-    +modifyListButtonClicked()
-    +renameListButtonClicked()
-    +deleteListButtonClicked()
-    +fileButtonClicked()
-    +helpButtonClicked()
-    +openButtonClicked()
-    +saveButtonClicked()
-    +saveAsButtonClicked()
-    +fileButtonClicked()
-    +helpButtonClicked()
-    +openButtonClicked()
-    +saveButtonClicked()
-    +saveAsButtonClicked()
-    +listColumnClicked()
-    +datesColumnClicked()
-}
-
 class ItemController {
+    -openFile()
+    -saveFile()
+    -saveAsFile()
+    --
+    +run()
     +addButtonClicked()
+    +enterButtonAdd()
     +renameButtonClicked()
     +editDateButtonClicked()
     +editDescriptionButtonClicked()
     +deleteButtonClicked()
-    +taskColumnClicked()
-    +dateColumnClicked()
-    +completeColumnClicked()
-    +descriptionColumnClicked()
+    +openMenuClicked()
+    +saveMenuClicked()
+    +saveAsMenuClicked()
+    +closeMenuClicked()
+    +howToUseMenuClicked()
+    +aboutMenuClicked()
+    +deleteAllButtonClicked()
+    +showAllFilterClicked()
+    +incompleteFilterClicked()
+    +completedFilterClicked()
+    +tableColumnClicked()
+    +doubleClick()
+    +saveEdit()
+    +cancelEdit()
+}
+
+class Table {
+    -task
+    -date
+    -description
+    --
+    +Table()
+    +getTask()
+    +setTask()
+    +taskProperty()
+    +getDate()
+    +setDate()
+    +dateProperty()
+    +getDescription()
+    +setDescription()
+    +descriptionProperty()
+}
+
+class Initialize {
+    +run()
 }
 
 javafx.Application <|-- ListMaker
+ListMaker <|-- ItemController
+ItemController - Table
+ItemController <|-- Initialize
 
-ListMaker - ListController
-ListController - ItemController
 
 @enduml
