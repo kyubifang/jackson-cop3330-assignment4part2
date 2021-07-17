@@ -1,7 +1,7 @@
 # jackson-cop3330-assignment4part2
 This is dedicated to Rey.
 
-This application is meant to run as a todo list for the user.
+This application is intended to run as a todo list for the user.
 
 To use:
 
@@ -13,8 +13,8 @@ The task should have a checkbox that can be toggled if the task is complete.
 If you need to edit any tasks:
 
 Click the row you would like to edit.
-Double clicking on a value will allow an easy modification.
-If double clicking is an issue, you may click on one of the respective edit buttons:
+Double-clicking on a value will allow an easy modification.
+If double-clicking is an issue, you may click on one of the respective edit buttons:
 Rename, Edit Date, Edit Description.
 The specific variable will be ready to edit.
 Upon finishing, clicking elsewhere or pressing enter will overwrite your previous value.
