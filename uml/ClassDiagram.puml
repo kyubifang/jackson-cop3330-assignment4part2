@@ -1,6 +1,4 @@
 @startuml
-'https://plantuml.com/sequence-diagram
-
 class ListMaker {
     +main()
     +start()

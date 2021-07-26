@@ -9,12 +9,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -31,40 +33,72 @@ import java.util.logging.Logger;
 
 public class ItemController extends ListMaker {
 
+    @FXML
     public MenuItem openBtn;
+    @FXML
     public MenuItem saveBtn;
+    @FXML
     public MenuItem saveAsBtn;
+    @FXML
     public MenuItem closeBtn;
+    @FXML
     public MenuItem how2Btn;
+    @FXML
     public MenuItem aboutBtn;
+    @FXML
     public TextField taskField;
+    @FXML
     public TextField descField;
+    @FXML
     public DatePicker datePicker;
+    @FXML
     public Button addBtn;
+    @FXML
     public Button renameBtn;
+    @FXML
     public Button editDateBtn;
+    @FXML
     public Button editDescBtn;
+    @FXML
     public Button deleteBtn;
+    @FXML
     public Button deleteAllBtn;
+    @FXML
     public TableView<Table> tableView;
+    @FXML
     public TableColumn<Table, String> taskCol;
+    @FXML
     public TableColumn<Table, String> dateCol;
+    @FXML
     public TableColumn<Table, String> compCol;
+    @FXML
     public TableColumn<Table, String> descCol;
+    @FXML
     public SplitMenuButton filter;
+    @FXML
     public MenuItem showAllBtn;
+    @FXML
     public MenuItem incompBtn;
+    @FXML
     public MenuItem compBtn;
+    @FXML
     public Label noRow;
+    @FXML
     public Label noTask;
 
-    public final TableView<Table> table = new TableView<>();
-    public final ObservableList<Table> data = FXCollections.observableArrayList();
+    public final TableView<Table> table = new TableView<Table>();
+    public final ObservableList<Table> data = FXCollections.observableArrayList(
+            new Table("laundry", "07-09-2021", "do laundry"));
     public final Desktop desktop = Desktop.getDesktop();
     final FileChooser fileChooser = new FileChooser();
 
     @FXML
     void run() {
+        table.setEditable(true);
+        taskCol.setCellValueFactory(new PropertyValueFactory<Table, String>("Task"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<Table, String>("Due Date"));
+        descCol.setCellValueFactory(new PropertyValueFactory<Table, String>("Description"));
+        tableView.setItems(data);
     }
 
     @FXML
@@ -73,24 +107,29 @@ public class ItemController extends ListMaker {
         //check if there is a task put into the task name field
         //if there isn't
         //  prompt user for a task name
-        noTask.setVisible(taskField == null);
+        if(taskField.getText().equals("")){
+            noTask.setVisible(true);
+        }
         //else
         //  add task name to list. If date a/o description available, add as well.
+        addBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                data.add(new Table(
+                        taskField.getText(),
+                        datePicker.getEditor().getText(),
+                        descField.getText()
+                ));
+                taskField.clear();
+                datePicker.getEditor().clear();
+                descField.clear();
+                noTask.setVisible(false);
+            }
 
-        addBtn.setOnAction(event -> {
-            data.add(new Table(
-                    taskField.getText(),
-                    datePicker.getEditor().getText(),
-                    descField.getText()
-            ));
-            taskField.clear();
-            datePicker.getEditor().clear();
-            descField.clear();
-            tableView.getItems().addAll(data);
-            tableView.setItems(data);
         });
         tableView.getItems().addAll(data);
         tableView.setItems(data);
+
     }
 
     @FXML
@@ -251,6 +290,8 @@ public class ItemController extends ListMaker {
     @FXML
     public void doubleClick(TableColumn.CellEditEvent cellEditEvent) {
         //column and row in table double clicked
+        taskCol.setOnEditCommit(event -> event.getTableView().getItems().get(
+                event.getTablePosition().getRow()).setTask(event.getNewValue()));
         //highlight that specific value for editing
     }
 
@@ -307,10 +348,10 @@ public class ItemController extends ListMaker {
         private final SimpleDateFormat date;
         private final SimpleStringProperty description;
 
-        public Table(String task, String date, String description) {
-            this.task = new SimpleStringProperty(task);
-            this.date = new SimpleDateFormat(date);
-            this.description = new SimpleStringProperty(description);
+        public Table(String tasks, String dates, String descriptions) {
+            this.task = new SimpleStringProperty(tasks);
+            this.date = new SimpleDateFormat(dates);
+            this.description = new SimpleStringProperty(descriptions);
         }
 
         public String getTask() {
